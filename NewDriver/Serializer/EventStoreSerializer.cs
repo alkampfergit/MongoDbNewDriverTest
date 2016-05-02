@@ -38,4 +38,33 @@ namespace NewDriver.Serializer
             }
         }
     }
+
+    public class TypedEventStoreIdentityBsonSerializer<T> : SerializerBase<T> where T : EventStoreIdentity
+    {
+
+        public override T Deserialize(BsonDeserializationContext context, BsonDeserializationArgs args)
+        {
+            if (context.Reader.CurrentBsonType == BsonType.Null)
+            {
+                context.Reader.ReadNull();
+                return null;
+            }
+
+            var id = context.Reader.ReadString();
+
+            return (T) IdentityHelper.Parse(id);
+        }
+
+        public override void Serialize(BsonSerializationContext context, BsonSerializationArgs args, T value)
+        {
+            if (value == null)
+            {
+                context.Writer.WriteNull();
+            }
+            else
+            {
+                context.Writer.WriteString(value.AsString());
+            }
+        }
+    }
 }

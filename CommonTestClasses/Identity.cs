@@ -98,4 +98,6 @@ namespace CommonTestClasses
 
         public T RelatedId { get; set; }
     }
+
+
 }
