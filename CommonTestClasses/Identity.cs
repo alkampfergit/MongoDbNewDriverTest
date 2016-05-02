@@ -77,4 +77,18 @@ namespace CommonTestClasses
         }
 
     }
+
+    public class ObjectWithIdentity
+    {
+        public String Id { get; set; }
+
+        public GroupId GroupId { get; set; }
+    }
+
+    public class ObjectWithArrayOfIdentities
+    {
+        public String Id { get; set; }
+
+        public GroupId[] Groups { get; set; }
+    }
 }
