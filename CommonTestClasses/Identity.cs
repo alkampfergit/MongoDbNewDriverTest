@@ -91,4 +91,11 @@ namespace CommonTestClasses
 
         public GroupId[] Groups { get; set; }
     }
+
+    public class ObjectWithGenericIdentity<T> where T : EventStoreIdentity
+    {
+        public String Id { get; set; }
+
+        public T RelatedId { get; set; }
+    }
 }

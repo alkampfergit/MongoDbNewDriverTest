@@ -1,4 +1,5 @@
 ﻿using CommonTestClasses;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 using NUnit.Framework;
@@ -16,6 +17,7 @@ namespace OldDriver.Serializer
     {
         MongoCollection<ObjectWithIdentity> _collObjectWithIdentity;
         MongoCollection<ObjectWithArrayOfIdentities> _collObjectWithArrayOfIdentities;
+        MongoCollection<BsonDocument> _collGenericObject;
 
         [TestFixtureSetUp]
         public void TestFixtureSetUp()
@@ -33,8 +35,10 @@ namespace OldDriver.Serializer
             var url = new MongoUrl(ConfigurationManager.ConnectionStrings["base"].ConnectionString);
             var client = new MongoClient(url);
             var db = client.GetServer().GetDatabase(url.DatabaseName);
+            db.Drop();
             _collObjectWithArrayOfIdentities = db.GetCollection<ObjectWithArrayOfIdentities>("ObjectWithArrayOfIdentities");
             _collObjectWithIdentity = db.GetCollection<ObjectWithIdentity>("ObjectWithIdentity");
+            _collGenericObject = db.GetCollection<BsonDocument>("ObjectWithGenericIdentity");
         }
 
         [Test]
@@ -81,6 +85,30 @@ namespace OldDriver.Serializer
             };
             _collObjectWithArrayOfIdentities.Insert(obj);
             var deserialized = _collObjectWithArrayOfIdentities.FindOneById(obj.Id);
+        }
+
+        [Test]
+        public void verify_serialization_generic()
+        {
+            ObjectWithGenericIdentity<GroupId> obj = new ObjectWithGenericIdentity<GroupId>()
+            {
+                Id = Guid.NewGuid().ToString(),
+                RelatedId = new GroupId(1),
+            };
+            var document = obj.ToBsonDocument();
+            _collGenericObject.Insert(document);
+        }
+
+        [Test]
+        public void verify_deserialization_generic()
+        {
+            ObjectWithGenericIdentity<GroupId> obj = new ObjectWithGenericIdentity<GroupId>()
+            {
+                Id = Guid.NewGuid().ToString(),
+                RelatedId = new GroupId(1),
+            };
+            _collGenericObject.Insert(obj.ToBsonDocument());
+            var deserialized = _collGenericObject.FindOneById(obj.Id);
         }
     }
 }
