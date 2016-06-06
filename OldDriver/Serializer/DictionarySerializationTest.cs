@@ -71,5 +71,18 @@ namespace OldDriver.Serializer
             obj.Dictionary.Add(new GroupId(1), "Test");
             _collDicSer.Insert(obj);
         }
+
+
+        [Test]
+        public void verify_serialization_of_object_with_serializer()
+        {
+            ObjectWithDictionaryProperties obj = new ObjectWithDictionaryProperties();
+            obj.Properties.Add("test1", new GroupId(1));
+            obj.Properties.Add("test2", "a string");
+            var serialized = obj.ToJson();
+            //the very same test passes with old driver, because the old driver uses the concept of
+            //nominal type, and when it is time to serializer
+            Assert.AreEqual("{ \"Properties\" : { \"test1\" : \"Group_1\", \"test2\" : \"a string\" } }", serialized);
+        }
     }
 }

@@ -110,5 +110,7 @@ namespace OldDriver.Serializer
             _collGenericObject.Insert(obj.ToBsonDocument());
             var deserialized = _collGenericObject.FindOneById(obj.Id);
         }
+
+
     }
 }

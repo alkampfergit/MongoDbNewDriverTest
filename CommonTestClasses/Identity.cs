@@ -99,5 +99,13 @@ namespace CommonTestClasses
         public T RelatedId { get; set; }
     }
 
+    public class ObjectWithDictionaryProperties
+    {
+        public ObjectWithDictionaryProperties()
+        {
+            Properties = new Dictionary<string, object>();
+        }
+        public Dictionary<String, Object> Properties { get; set; }
+    }
 
 }
