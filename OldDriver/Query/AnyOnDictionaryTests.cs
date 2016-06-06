@@ -20,8 +20,8 @@ namespace OldDriver.Serializer
     {
         MongoCollection<ClassWithMetadata> _collection;
 
-        [TestFixtureSetUp]
-        public void TestFixtureSetUp()
+        [SetUp]
+        public void SetUp()
         {
             var url = new MongoUrl(ConfigurationManager.ConnectionStrings["base"].ConnectionString);
             var client = new MongoClient(url);
@@ -31,6 +31,10 @@ namespace OldDriver.Serializer
            
         }
 
+        /// <summary>
+        /// This test failed, because any does not work as expectd on old driver, in new driver it correctly
+        /// returns error 
+        /// </summary>
         [Test]
         public void verify_where_query()
         {
@@ -43,21 +47,6 @@ namespace OldDriver.Serializer
             _collection.Insert(test2);
 
             var result = _collection.Find(Query<ClassWithMetadata>.Where(c => c.Metadata.Any())).ToList();
-            Assert.That(result, Has.Count.EqualTo(1));
-        }
-
-        [Test]
-        public void verify_where_query_linq()
-        {
-            ClassWithMetadata test1 = new ClassWithMetadata() { Id = "1", Metadata = new Dictionary<string, Metadata>() };
-            ClassWithMetadata test2 = new ClassWithMetadata() { Id = "2", Metadata = new Dictionary<string, Metadata>() };
-
-            test2.Metadata.Add("doc1", new Metadata() { Key = "a", Value = "b" });
-
-            _collection.Insert(test1);
-            _collection.Insert(test2);
-
-            var result = _collection.AsQueryable().Where(e => e.Metadata.Any()).ToList();
             Assert.That(result, Has.Count.EqualTo(1));
         }
     }

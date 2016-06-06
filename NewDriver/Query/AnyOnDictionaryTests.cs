@@ -18,8 +18,8 @@ namespace NewDriver.Serializer
     {
         IMongoCollection<ClassWithMetadata> _collection;
 
-        [TestFixtureSetUp]
-        public void TestFixtureSetUp()
+        [SetUp]
+        public void SetUp()
         {
             var url = new MongoUrl(ConfigurationManager.ConnectionStrings["base"].ConnectionString);
             var client = new MongoClient(url);
